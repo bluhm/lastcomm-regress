@@ -38,7 +38,7 @@ run-regress-core:
 	@echo '\n======== $@ ========'
 	# Create shell program, abort sub shell, and check the -DX flag.
 	cp -f /bin/sh bin-core
-	ulimit -c 100000; ./bin-core -c '( : ) & kill -ABRT $$!'
+	ulimit -c 100000; ./bin-core -c '( : ) & kill -SEGV $$!'
 	lastcomm bin-core | grep -q ' -FDX '
 
 TARGETS+=	xsig
