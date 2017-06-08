@@ -7,8 +7,15 @@
 PROG=		crash
 CLEANFILES=	bin-* stamp-*
 
+.if make (regress) || make (all)
+.BEGIN:
+	@echo
+	rm -f stamp-rotate
+.endif
+
 # Rotate accouting files and keep statistics, from /etc/daily.
 stamp-rotate:
+	@echo '\n======== $@ ========'
 	-${SUDO} mv -f /var/account/acct.2 /var/account/acct.3
 	-${SUDO} mv -f /var/account/acct.1 /var/account/acct.2
 	-${SUDO} mv -f /var/account/acct.0 /var/account/acct.1
@@ -38,6 +45,7 @@ run-regress-core:
 	@echo '\n======== $@ ========'
 	# Create shell program, abort sub shell, and check the -DX flag.
 	cp -f /bin/sh bin-core
+	rm -f bin-core.core
 	ulimit -c 100000; ./bin-core -c '( : ) & kill -SEGV $$!'
 	lastcomm bin-core | grep -q ' -FDX '
 
