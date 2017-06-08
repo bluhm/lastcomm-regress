@@ -56,7 +56,7 @@ run-regress-pledge:
 	cp -f /usr/bin/perl bin-pledge
 	ulimit -c 0; ! ./bin-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
-	lastcomm bin-pledge | grep -q ' -XP '
+	lastcomm bin-pledge | grep -q ' -S*XP '
 
 TARGETS+=	trap
 run-regress-trap: ${PROG}
@@ -64,7 +64,7 @@ run-regress-trap: ${PROG}
 	# Create perl program, kill sub shell, and check the -X flag.
 	cp -f ${PROG} bin-trap
 	./bin-trap
-	lastcomm bin-trap | grep -q ' -T '
+	lastcomm bin-trap | grep -q ' -S*T '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
