@@ -37,7 +37,7 @@ run-regress-core:
 	@echo '\n======== $@ ========'
 	# Create shell program, abort sub shell, and check the -DX flag.
 	cp -f /bin/sh bin-core
-	ulimit -c unlimited && ./bin-core -c '( : ) & kill -ABRT $$!'
+	ulimit -c 100000; ./bin-core -c '( : ) & kill -ABRT $$!'
 	lastcomm bin-core | grep -q ' -FDX '
 
 TARGETS+=	xsig
@@ -47,6 +47,15 @@ run-regress-xsig:
 	cp -f /bin/sh bin-xsig
 	./bin-xsig -c '( : ) & kill -KILL $$!'
 	lastcomm bin-xsig | grep -q ' -FX '
+
+TARGETS+=	pledge
+run-regress-pledge:
+	@echo '\n======== $@ ========'
+	# Create perl program, kill sub shell, and check the -X flag.
+	cp -f /usr/bin/perl bin-pledge
+	ulimit -c 0; ! ./bin-pledge -MOpenBSD::Pledge -e\
+	    'pledge("stdio") or die $$!; chdir("/")'
+	lastcomm bin-pledge | grep -q ' -XP '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
