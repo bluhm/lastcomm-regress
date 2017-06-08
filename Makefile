@@ -21,11 +21,26 @@ stamp-rotate:
 TARGETS+=	fork
 run-regress-fork:
 	@echo '\n======== $@ ========'
-	# Create a shell program, fork a sub shell, and check the -F flag.
-	rm -f bin-fork
-	cp /bin/sh bin-fork
+	# Create shell program, fork a sub shell, and check the -F flag.
+	cp -f /bin/sh bin-fork
 	./bin-fork -c '( : ) & :'
 	lastcomm bin-fork | grep -q ' -F '
+
+TARGETS+=	su
+run-regress-su:
+	@echo '\n======== $@ ========'
+	# Create true program, run as super user, and check the -S flag.
+	cp -f /usr/bin/true bin-su
+	${SUDO} ./bin-su
+	lastcomm bin-su | grep -q ' -S '
+
+TARGETS+=	core
+run-regress-core:
+	@echo '\n======== $@ ========'
+	# Create shell program, abort sub shell, and check the -DX flag.
+	cp -f /bin/sh bin-core
+	ulimit -c unlimited; ./bin-core -c '( sleep 1 ) & kill -ABRT $$!'
+	lastcomm bin-core | grep -q ' -FDX '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
