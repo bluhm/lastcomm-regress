@@ -1,5 +1,9 @@
 # $OpenBSD$
 
+# Start with a clean /var/account/acct accounting file and turn on
+# process accounting with accton(8).  Each test executes a command
+# with a unique name and checks the flags in the lastcomm(1) output.
+
 CLEANFILES=	bin-* stamp-*
 
 .BEGIN:
@@ -13,14 +17,15 @@ stamp-rotate:
 	${SUDO} sa -sq
 	${SUDO} accton /var/account/acct
 
+
 TARGETS+=	fork
 run-regress-fork:
 	@echo '\n======== $@ ========'
+	# Create a shell program, fork a sub shell, and check the -F flag.
 	rm -f bin-fork
 	cp /bin/sh bin-fork
 	./bin-fork -c '( : ) & :'
-	lastcomm | grep '^bin-fork * -F '
-	lastcomm | grep '^bin-fork * - '
+	lastcomm bin-fork | grep -q ' -F '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
