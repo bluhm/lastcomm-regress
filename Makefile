@@ -3,6 +3,7 @@
 # Start with a clean /var/account/acct accounting file and turn on
 # process accounting with accton(8).  Each test executes a command
 # with a unique name and checks the flags in the lastcomm(1) output.
+# Run tests with fork, su, core, xsig, pledge, trap accounting.
 
 PROG=		crash
 CLEANFILES=	bin-* stamp-*
