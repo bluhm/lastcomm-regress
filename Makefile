@@ -4,6 +4,7 @@
 # process accounting with accton(8).  Each test executes a command
 # with a unique name and checks the flags in the lastcomm(1) output.
 
+PROG=		crash
 CLEANFILES=	bin-* stamp-*
 
 # Rotate accouting files and keep statistics, from /etc/daily.
@@ -56,6 +57,14 @@ run-regress-pledge:
 	ulimit -c 0; ! ./bin-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
 	lastcomm bin-pledge | grep -q ' -XP '
+
+TARGETS+=	trap
+run-regress-trap: ${PROG}
+	@echo '\n======== $@ ========'
+	# Create perl program, kill sub shell, and check the -X flag.
+	cp -f ${PROG} bin-trap
+	./bin-trap
+	lastcomm bin-trap | grep -q ' -T '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
