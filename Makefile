@@ -16,6 +16,7 @@ CLEANFILES=	bin-* stamp-*
 # Rotate accouting files and keep statistics, from /etc/daily.
 stamp-rotate:
 	@echo '\n======== $@ ========'
+	${SUDO} touch /var/account/acct
 	-${SUDO} mv -f /var/account/acct.2 /var/account/acct.3
 	-${SUDO} mv -f /var/account/acct.1 /var/account/acct.2
 	-${SUDO} mv -f /var/account/acct.0 /var/account/acct.1
