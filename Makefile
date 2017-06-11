@@ -62,7 +62,7 @@ run-regress-xsig:
 TARGETS+=	pledge
 run-regress-pledge:
 	@echo '\n======== $@ ========'
-	# Create perl program, kill sub shell, and check the -X flag.
+	# Create perl program, violate pledge, and check the -P flag.
 	cp -f /usr/bin/perl bin-pledge
 	ulimit -c 0; ! ./bin-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
@@ -71,7 +71,7 @@ run-regress-pledge:
 TARGETS+=	trap
 run-regress-trap: ${PROG}
 	@echo '\n======== $@ ========'
-	# Create perl program, kill sub shell, and check the -X flag.
+	# Build crashing program, run SIGSEGV handler, and check the -T flag.
 	cp -f ${PROG} bin-trap
 	./bin-trap
 	lastcomm bin-trap | grep -q ' -S*T '
