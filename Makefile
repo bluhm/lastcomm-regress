@@ -1,4 +1,4 @@
-# $OpenBSD: Makefile,v 1.1.1.1 2017/06/08 17:29:33 bluhm Exp $
+# $OpenBSD: Makefile,v 1.2 2017/06/11 19:43:16 bluhm Exp $
 
 # Start with a clean /var/account/acct accounting file and turn on
 # process accounting with accton(8).  Each test executes a command
