@@ -48,7 +48,7 @@ run-regress-core:
 	# Create shell program, abort sub shell, and check the -DX flag.
 	cp -f /bin/sh bin-core
 	rm -f bin-core.core
-	ulimit -c 100000; ./bin-core -c '( : ) & kill -SEGV $$!'
+	ulimit -c 100000; ./bin-core -c '( : ) & kill -SEGV $$!; wait'
 	lastcomm bin-core | grep -q ' -FDX '
 
 TARGETS+=	xsig
@@ -56,7 +56,7 @@ run-regress-xsig:
 	@echo '\n======== $@ ========'
 	# Create shell program, kill sub shell, and check the -X flag.
 	cp -f /bin/sh bin-xsig
-	./bin-xsig -c '( : ) & kill -KILL $$!'
+	./bin-xsig -c '( : ) & kill -KILL $$!; wait'
 	lastcomm bin-xsig | grep -q ' -FX '
 
 TARGETS+=	pledge
