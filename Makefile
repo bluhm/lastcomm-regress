@@ -58,7 +58,7 @@ run-regress-pledge:
 	cp -f /usr/bin/perl regress-pledge
 	ulimit -c 0; ! ./regress-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
-	lastcomm regress-pledge | grep -q ' -S*XP '
+	lastcomm regress-pledge | grep -q ' -XP '
 
 TARGETS+=	trap
 run-regress-trap: ${PROG}
@@ -66,7 +66,7 @@ run-regress-trap: ${PROG}
 	# Build crashing program, run SIGSEGV handler, and check the -T flag.
 	cp -f ${PROG} regress-trap
 	./regress-trap
-	lastcomm regress-trap | grep -q ' -S*T '
+	lastcomm regress-trap | grep -q ' -T '
 
 REGRESS_TARGETS=	${TARGETS:S/^/run-regress-/}
 ${REGRESS_TARGETS}:	stamp-rotate
