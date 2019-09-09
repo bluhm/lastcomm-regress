@@ -3,9 +3,10 @@
 # Start with a clean /var/account/acct accounting file and turn on
 # process accounting with accton(8).  Each test executes a command
 # with a unique name and checks the flags in the lastcomm(1) output.
-# Run tests with fork, su, core, xsig, pledge, trap accounting.
+# Run tests with fork, map, core, xsig, pledge, trap accounting.
 
 PROGS=		crash stackmap
+WARNINGS=	Yes
 CLEANFILES=	regress-*
 
 REGRESS_SETUP_ONCE =	setup-rotate
@@ -27,6 +28,14 @@ run-fork:
 	cp -f /bin/sh regress-fork
 	./regress-fork -c '( : ) &'
 	lastcomm regress-fork | grep -q ' -F '
+
+REGRESS_TARGETS +=	run-stackmap
+run-stackmap: stackmap
+	@echo '\n======== $@ ========'
+	# Use invalid stack pointer, run SIGSEGV handler, check the -M flag.
+	cp -f stackmap regress-stackmap
+	./regress-stackmap
+	lastcomm regress-stackmap | grep -q ' -MT '
 
 REGRESS_TARGETS +=	run-core
 run-core:
