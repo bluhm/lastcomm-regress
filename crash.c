@@ -1,4 +1,4 @@
-/*	$OpenBSD: crash.c,v 1.1.1.1 2017/06/08 17:29:33 bluhm Exp $	*/
+/*	$OpenBSD: crash.c,v 1.2 2019/09/10 19:01:24 bluhm Exp $	*/
 /*
  * Copyright (c) 2017-2019 Alexander Bluhm <bluhm@openbsd.org>
  *

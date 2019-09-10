@@ -1,4 +1,4 @@
-/*	$OpenBSD$	*/
+/*	$OpenBSD: pivot.h,v 1.1 2019/09/10 19:01:24 bluhm Exp $	*/
 
 #ifndef REGRESS_PIVOT_H
 #define REGRESS_PIVOT_H
