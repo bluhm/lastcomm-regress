@@ -44,16 +44,17 @@ main(int argc, char *argv[])
 	act.sa_handler = handler;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = SA_ONSTACK;
-	if (sigaction(SIGSEGV, &act, NULL) == -1)
-		err(1, "sigaction");
 
 	/* set up an alt stack on the heap that just calls doexit */
 	newstack = malloc(SIGSTKSZ);
 	if (newstack == NULL)
 		err(1, "malloc newstack");
 	newstack[0] = (size_t)doexit;
+
+	if (sigaction(SIGSEGV, &act, NULL) == -1)
+		err(1, "sigaction");
 	pivot(newstack);
-	return 0;
+	return 3;
 }
 
 void
