@@ -5,8 +5,10 @@
 # with a unique name and checks the flags in the lastcomm(1) output.
 # Run tests with fork, map, core, xsig, pledge, trap accounting.
 
-PROGS=		crash stackmap
+PROGS=		crash stackmap syscallwx
 WARNINGS=	Yes
+CFLAGS=		-g -O0
+LDADD_syscallwx=	-z wxneeded
 CLEANFILES=	regress-*
 
 REGRESS_SETUP_ONCE =	setup-rotate
@@ -36,6 +38,14 @@ run-stackmap: stackmap
 	cp -f stackmap regress-stackmap
 	./regress-stackmap
 	lastcomm regress-stackmap | grep -q ' -MT '
+
+REGRESS_TARGETS +=	run-syscallwx
+run-syscallwx: syscallwx
+	@echo '\n======== $@ ========'
+	# Use writable syscall code, run SIGSEGV handler, check the -M flag.
+	cp -f syscallwx regress-syscallwx
+	./regress-syscallwx
+	lastcomm regress-syscallwx | grep -q ' -MT '
 
 REGRESS_TARGETS +=	run-core
 run-core:
