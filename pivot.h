@@ -1,3 +1,5 @@
+/*	$OpenBSD$	*/
+
 #ifndef REGRESS_PIVOT_H
 #define REGRESS_PIVOT_H
 
