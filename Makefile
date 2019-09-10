@@ -71,4 +71,6 @@ run-trap: crash
 	./regress-trap
 	lastcomm regress-trap | grep -q ' -T '
 
+${REGRESS_TARGETS}: ${PROGS}
+
 .include <bsd.regress.mk>

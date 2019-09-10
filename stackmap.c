@@ -31,7 +31,7 @@ main(int argc, char *argv[])
 {
 	stack_t ss;
 	struct sigaction act;
-	size_t *newstack;
+	void (**newstack)(void);
 
 	ss.ss_sp = malloc(SIGSTKSZ);
 	if (ss.ss_sp == NULL)
@@ -49,7 +49,7 @@ main(int argc, char *argv[])
 	newstack = malloc(SIGSTKSZ);
 	if (newstack == NULL)
 		err(1, "malloc newstack");
-	newstack[0] = (size_t)doexit;
+	newstack[0] = doexit;
 
 	if (sigaction(SIGSEGV, &act, NULL) == -1)
 		err(1, "sigaction");
