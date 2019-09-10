@@ -1,6 +1,6 @@
 /*	$OpenBSD: crash.c,v 1.1.1.1 2017/06/08 17:29:33 bluhm Exp $	*/
 /*
- * Copyright (c) 2017 Alexander Bluhm <bluhm@openbsd.org>
+ * Copyright (c) 2017-2019 Alexander Bluhm <bluhm@openbsd.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
