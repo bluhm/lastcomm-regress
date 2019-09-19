@@ -65,7 +65,7 @@ main(int argc, char *argv[])
 void
 handler(int signum)
 {
-        _exit(0);
+	_exit(0);
 }
 
 void
