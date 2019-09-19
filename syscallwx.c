@@ -19,9 +19,7 @@
 #include <sys/mman.h>
 
 #include <err.h>
-#include <stdlib.h>
 #include <signal.h>
-#include <string.h>
 #include <unistd.h>
 
 void handler(int);
@@ -29,24 +27,19 @@ void handler(int);
 int
 main(int argc, char *argv[])
 {
-	void (*newcode)(int);
-	long pagesize;
+	pid_t pid;
 
-	pagesize = sysconf(_SC_PAGESIZE);
-	if (pagesize == -1)
-		err(1, "sysconf");
-	/* set up an alt code on the heap that just syscalls _exit */
-	newcode = mmap(0, pagesize, PROT_WRITE, MAP_ANON, -1, 0);
-	if (newcode == NULL)
-		err(1, "mmap");
-	memcpy(newcode, _exit, 16);
-	if (mprotect(newcode, pagesize, PROT_EXEC | PROT_WRITE) == -1)
+	pid = getpid();
+	if (pid == -1)
+		err(1, "getpid");
+	/* map kill system call in libc writeable */
+	if (mprotect(kill, 100, PROT_EXEC | PROT_WRITE | PROT_READ) == -1)
 		err(1, "mprotect");
 
 	if (signal(SIGSEGV, handler) == SIG_ERR)
 		err(1, "signal");
-	(*newcode)(2);
-
+	if (kill(pid, SIGABRT) == -1)
+		err(1, "kill");
 	return 3;
 }
 
