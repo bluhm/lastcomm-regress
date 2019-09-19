@@ -32,6 +32,7 @@ main(int argc, char *argv[])
 	stack_t ss;
 	struct sigaction act;
 	void (**newstack)(void);
+	long pagesize;
 
 	ss.ss_sp = malloc(SIGSTKSZ);
 	if (ss.ss_sp == NULL)
@@ -46,14 +47,18 @@ main(int argc, char *argv[])
 	act.sa_flags = SA_ONSTACK;
 
 	/* set up an alt stack on the heap that just calls doexit */
-	newstack = malloc(SIGSTKSZ);
+	pagesize = sysconf(_SC_PAGESIZE);
+	if (pagesize == -1)
+		err(1, "sysconf");
+	newstack = malloc(pagesize > SIGSTKSZ ? pagesize : SIGSTKSZ);
 	if (newstack == NULL)
 		err(1, "malloc newstack");
-	newstack[0] = doexit;
+	/* allow stack to change half a page up and down. */
+	newstack[pagesize/sizeof(*newstack)/2] = doexit;
 
 	if (sigaction(SIGSEGV, &act, NULL) == -1)
 		err(1, "sigaction");
-	pivot(newstack);
+	pivot(&newstack[pagesize/sizeof(*newstack)/2]);
 	return 3;
 }
 
