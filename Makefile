@@ -5,6 +5,16 @@
 # with a unique name and checks the flags in the lastcomm(1) output.
 # Run tests with fork, map, core, xsig, pledge, trap accounting.
 
+.if ! (make(clean) || make(cleandir) || make(obj))
+
+MOUNT_OBJ !!= mount | grep ^$$(df -P . | tail -1 | awk '{ print $$1 }')
+
+.if "${MOUNT_OBJ:M*wxallowed*}" == ""
+REGRESS_SKIP_TARGETS +=	run-syscallwx
+.endif
+
+.endif
+
 PROGS=		crash stackmap syscallwx
 WARNINGS=	Yes
 CFLAGS=		-g -O0
