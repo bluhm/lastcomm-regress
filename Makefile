@@ -15,7 +15,7 @@ REGRESS_SKIP_TARGETS +=	run-syscallwx
 
 .endif
 
-PROGS=		crash stackmap syscallwx
+PROGS=		crash trapstack callstack syscallwx
 WARNINGS=	Yes
 CFLAGS=		-g -O0
 LDADD_syscallwx=	-z wxneeded
@@ -36,23 +36,31 @@ setup-rotate:
 REGRESS_TARGETS +=	run-fork
 run-fork:
 	@echo '\n======== $@ ========'
-	# Create shell program, fork a sub shell, and check the -F flag.
+	# Create shell program, fork a sub shell, and check -F flag.
 	cp -f /bin/sh regress-fork
 	./regress-fork -c '( : ) &'
 	lastcomm regress-fork | grep -q ' -F '
 
-REGRESS_TARGETS +=	run-stackmap
-run-stackmap: stackmap
+REGRESS_TARGETS +=	run-trapstack
+run-trapstack: trapstack
 	@echo '\n======== $@ ========'
-	# Use invalid stack pointer, run SIGSEGV handler, check the -M flag.
-	cp -f stackmap regress-stackmap
-	./regress-stackmap
-	lastcomm regress-stackmap | grep -q ' -MT '
+	# Use invalid stack pointer, trap, SIGSEGV handler, check -M flag.
+	cp -f trapstack regress-trapstack
+	./regress-trapstack
+	lastcomm regress-trapstack | grep -q ' -MT '
+
+REGRESS_TARGETS +=	run-callstack
+run-callstack: callstack
+	@echo '\n======== $@ ========'
+	# Use invalid stack pointer, syscall, SIGSEGV handler, check -M flag.
+	cp -f callstack regress-callstack
+	./regress-callstack
+	lastcomm regress-callstack | grep -q ' -MT '
 
 REGRESS_TARGETS +=	run-syscallwx
 run-syscallwx: syscallwx
 	@echo '\n======== $@ ========'
-	# Use writable syscall code, run SIGSEGV handler, check the -M flag.
+	# Use writable syscall code, run SIGSEGV handler, check -M flag.
 	cp -f syscallwx regress-syscallwx
 	./regress-syscallwx
 	lastcomm regress-syscallwx | grep -q ' -MT '
@@ -60,7 +68,7 @@ run-syscallwx: syscallwx
 REGRESS_TARGETS +=	run-core
 run-core:
 	@echo '\n======== $@ ========'
-	# Create shell program, abort sub shell, and check the -DX flag.
+	# Create shell program, abort sub shell, and check -DX flag.
 	cp -f /bin/sh regress-core
 	rm -f regress-core.core
 	ulimit -c 100000; ./regress-core -c '( : ) & kill -SEGV $$!; wait'
@@ -69,7 +77,7 @@ run-core:
 REGRESS_TARGETS +=	run-xsig
 run-xsig:
 	@echo '\n======== $@ ========'
-	# Create shell program, kill sub shell, and check the -X flag.
+	# Create shell program, kill sub shell, and check -X flag.
 	cp -f /bin/sh regress-xsig
 	./regress-xsig -c '( : ) & kill -KILL $$!; wait'
 	lastcomm regress-xsig | grep -q ' -FX '
@@ -77,7 +85,7 @@ run-xsig:
 REGRESS_TARGETS +=	run-pledge
 run-pledge:
 	@echo '\n======== $@ ========'
-	# Create perl program, violate pledge, and check the -P flag.
+	# Create perl program, violate pledge, and check -P flag.
 	cp -f /usr/bin/perl regress-pledge
 	ulimit -c 0; ! ./regress-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
@@ -86,7 +94,7 @@ run-pledge:
 REGRESS_TARGETS +=	run-trap
 run-trap: crash
 	@echo '\n======== $@ ========'
-	# Build crashing program, run SIGSEGV handler, and check the -T flag.
+	# Build crashing program, run SIGSEGV handler, and check -T flag.
 	cp -f crash regress-trap
 	./regress-trap
 	lastcomm regress-trap | grep -q ' -T '
