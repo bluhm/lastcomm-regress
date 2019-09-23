@@ -1,4 +1,4 @@
-/*	$OpenBSD$	*/
+/*	$OpenBSD: syscallwx.c,v 1.1 2019/09/23 08:34:07 bluhm Exp $	*/
 /*
  * Copyright (c) 2018 Todd Mortimer <mortimer@openbsd.org>
  * Copyright (c) 2019 Alexander Bluhm <bluhm@openbsd.org>
