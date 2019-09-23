@@ -15,6 +15,11 @@ REGRESS_SKIP_TARGETS +=	run-syscallwx
 
 .endif
 
+.if ${MACHINE} == amd64 || ${MACHINE} == armv7
+# calling trapsignal() from syscall path does not work on amd64
+REGRESS_EXPECTED_FAILURES +=	run-callstack run-syscallwx
+.endif
+
 PROGS=		crash trapstack callstack syscallwx
 WARNINGS=	Yes
 CFLAGS=		-g -O0
