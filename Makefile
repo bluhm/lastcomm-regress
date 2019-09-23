@@ -20,11 +20,10 @@ REGRESS_SKIP_TARGETS +=	run-syscallwx
 REGRESS_EXPECTED_FAILURES +=	run-callstack run-syscallwx
 .endif
 
-PROGS=		crash trapstack callstack syscallwx
-WARNINGS=	Yes
-CFLAGS=		-g -O0
+PROGS=			crash trapstack callstack syscallwx
+WARNINGS=		Yes
 LDADD_syscallwx=	-z wxneeded
-CLEANFILES=	regress-*
+CLEANFILES=		regress-*
 
 REGRESS_SETUP_ONCE =	setup-rotate
 # Rotate accouting files and keep statistics, from /etc/daily.
@@ -41,7 +40,7 @@ setup-rotate:
 REGRESS_TARGETS +=	run-fork
 run-fork:
 	@echo '\n======== $@ ========'
-	# Create shell program, fork a sub shell, and check -F flag.
+	# Create shell program, fork a sub shell, and check the -F flag.
 	cp -f /bin/sh regress-fork
 	./regress-fork -c '( : ) &'
 	lastcomm regress-fork | grep -q ' -F '
@@ -73,7 +72,7 @@ run-syscallwx: syscallwx
 REGRESS_TARGETS +=	run-core
 run-core:
 	@echo '\n======== $@ ========'
-	# Create shell program, abort sub shell, and check -DX flag.
+	# Create shell program, abort sub shell, and check the -DX flag.
 	cp -f /bin/sh regress-core
 	rm -f regress-core.core
 	ulimit -c 100000; ./regress-core -c '( : ) & kill -SEGV $$!; wait'
@@ -82,7 +81,7 @@ run-core:
 REGRESS_TARGETS +=	run-xsig
 run-xsig:
 	@echo '\n======== $@ ========'
-	# Create shell program, kill sub shell, and check -X flag.
+	# Create shell program, kill sub shell, and check the -X flag.
 	cp -f /bin/sh regress-xsig
 	./regress-xsig -c '( : ) & kill -KILL $$!; wait'
 	lastcomm regress-xsig | grep -q ' -FX '
@@ -90,7 +89,7 @@ run-xsig:
 REGRESS_TARGETS +=	run-pledge
 run-pledge:
 	@echo '\n======== $@ ========'
-	# Create perl program, violate pledge, and check -P flag.
+	# Create perl program, violate pledge, and check the -P flag.
 	cp -f /usr/bin/perl regress-pledge
 	ulimit -c 0; ! ./regress-pledge -MOpenBSD::Pledge -e\
 	    'pledge("stdio") or die $$!; chdir("/")'
@@ -99,7 +98,7 @@ run-pledge:
 REGRESS_TARGETS +=	run-trap
 run-trap: crash
 	@echo '\n======== $@ ========'
-	# Build crashing program, run SIGSEGV handler, and check -T flag.
+	# Build crashing program, run SIGSEGV handler, and check the -T flag.
 	cp -f crash regress-trap
 	./regress-trap
 	lastcomm regress-trap | grep -q ' -T '
